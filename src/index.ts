@@ -30,8 +30,8 @@ function getURL(endpoint: string) {
 
 /*
 Creates the body of the API request. Depending on which endpoint you call you will have to modify what the body
-contains. Check the Gainsight documentation for further details:
-https://support.gainsight.com/gainsight_nxt/API_and_Developer_Docs
+contains. 
+See the Gainsight documentation for further details: https://support.gainsight.com/gainsight_nxt/API_and_Developer_Docs
 */
 async function createRequestbody(
   precheck: string,
@@ -92,8 +92,9 @@ async function createRequestbody(
 Function that actually makes the API call. This should be dynamic enough to work in most cases if not modify this for
 your use case.
 Since in this demo we only look up records the method can be set to POST but if you need to update or delete records 
-you will need to modify the method. Refer to Gainsight API to determine which method to use.
-https://support.gainsight.com/gainsight_nxt/API_and_Developer_Docs
+you will need to modify the method. 
+
+See Gainsight API to determine which method to use: https://support.gainsight.com/gainsight_nxt/API_and_Developer_Docs
  */
 async function makeGainsightAPICall(
   precheck: string,
@@ -119,19 +120,14 @@ async function makeGainsightAPICall(
     let GSResponseJSON = await GSResponse.json();
 
     /*
-  Lines 62-75:
-  These are 2 ways of doing the same thing. We are trying to catch any errors that the API may return. With Gainsight
-  there is an attribute in the response called "result"  that returns true or false. If that the response is false the
-  call failed and if it returned true then the call was a success. 
-  
-  I included the code to use that attribute in lines 72-75 however, a word of caution,
-  there are times where Gainsight will return "result: true" but display an empty array. This is because while the call
-  was successful no search results were found. You would have account for those cases if you wanted to use result as a 
-  way to check if the call was successful or not.
+  These are two ways to handle Gainsight API errors:
 
-  The other method is using GSResponse.ok which would determine if the return code falls within the an acceptable http
-  response code, status in the range 200-299, or so the internet says. You can also use GSReponse.status to get the exact
-  code if you would like.
+  1. A boolean response property named result; if false, the call failed. This check is commented out below. 
+  Note that result may be true but the result may be an empty array if no search results were found.
+  2. The boolean ok property tells us whether the HTTP status fell within a success range (200-299). The status
+  property reports the actual status. 
+
+  We currently use the ok property check.
    */
     if (!GSResponse.ok) {
       throw new Error(
@@ -152,7 +148,6 @@ async function makeGainsightAPICall(
     );
     return GSResponseJSON;
   } catch (error) {
-    //console.error(error);
     throw error;
   } //end try-catch
 } //end makeGainsightAPICall
@@ -163,7 +158,7 @@ and have it return 1 GSID. The thought behind this is that there will always be 
 got the accessKey from because you need to log in to get the key. We don't care about the results we just care if the call failed.
 If it fails we error out; if it doesn't then we proceed with the install.
 
-Maven documentation on preinstall for actions:
+See Maven documentation on preinstall for actions:
 https://developers.mavenagi.com/docs/api-reference/api-reference/actions/working-with-actions#handling-actions-a-serverless-maven-app
 */
 
@@ -201,7 +196,7 @@ export default {
 
   If you need help with creating a description that works reach out to us on our discord! Invite Link at the top of the page.
 
-  Maven documentation for 'client.actions.createOrUpdate':
+  See Maven documentation for 'client.actions.createOrUpdate':
   https://developers.mavenagi.com/docs/api-reference/api-reference/actions/create-or-update
   */
   async postInstall({
@@ -220,6 +215,7 @@ export default {
       organizationId,
       agentId,
     });
+    
     //Relationship details action.
     await client.actions.createOrUpdate({
       actionId: {
@@ -293,7 +289,7 @@ export default {
   install, how to access the parameters you declared in the actions and how to execute different code for a specific action if your app has multiple 
   actions.
 
-  Maven documentation for executeAction **Including all the parameters possible to pass in**:
+  See Maven documentation for executeAction **Including all the parameters possible to pass in**:
   https://developers.mavenagi.com/docs/documentation/app-development/interface#executeaction
 
    */
@@ -326,7 +322,7 @@ export default {
     let result;
 
     /*
-    This if else if statment is how you would execute speific code for certian actions. As you can see we use the actionId parameter that was passed
+    This if else if statement is how you would execute specific code for certain actions. As you can see we use the actionId parameter that was passed
     into the function and we check to see if that is equal to the referenceId of the action we setup in the post install. This should be fairly 
     straightforward.
     */
@@ -364,7 +360,7 @@ export default {
     
     The second if to return an instruction to the bot like this:
     return `Tell the user their orderId is ${orderId} and thank them for their business.`;
-    This option will require some tuningto get it to be consistent.
+    This option will require some tuning to get it to be consistent.
     */
     return JSON.stringify(result.data.records);
   }, //end executeAction
