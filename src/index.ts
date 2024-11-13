@@ -33,13 +33,13 @@ Creates the body of the API request. Depending on which endpoint you call you wi
 contains. 
 See the Gainsight documentation for further details: https://support.gainsight.com/gainsight_nxt/API_and_Developer_Docs
 */
-async function createRequestbody(
-  precheck: string,
+async function createRequestBody(
+  bodyType: string,
   lookupField: string,
   lookupValue: any
 ) {
   let body;
-  if (precheck === 'preinstall') {
+  if (bodyType === 'preinstall') {
     //used to verify the the accessToken provided.
     body = {
       includeTotal: false,
@@ -47,7 +47,7 @@ async function createRequestbody(
       page: 0,
       select: ['GSID'],
     };
-  } else if (precheck === 'relationship') {
+  } else if (bodyType === 'relationship') {
     //used to search for a relationship record.
     body = {
       select: ['Name', 'GSID', 'CompanyId'],
@@ -65,7 +65,7 @@ async function createRequestbody(
       limit: 100,
       offset: 0,
     };
-  } else if (precheck === 'company') {
+  } else if (bodyType === 'company') {
     //used to search for a company record.
     body = {
       select: ['Name', 'SfdcAccountId', 'GSID'],
@@ -103,7 +103,7 @@ async function makeGainsightAPICall(
   lookupValue: any
 ) {
   let URL: string = getURL(endpoint);
-  let body = await createRequestbody(precheck, lookupField, lookupValue);
+  let body = await createRequestBody(precheck, lookupField, lookupValue);
 
   try {
     console.info('makeGainsightAPICall:: URL:: ' + URL);
