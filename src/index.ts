@@ -99,7 +99,7 @@ async function createRequestBodyString(
   return JSON.stringify(body);
 } //end creatRequestBody
 
-const endpointTypeToPathMapping = {
+const endpointTypeToPathMapping : { [key: string]: string } = {
   preinstall: "v1/users/services/list",
   relationship: "v1/data/objects/query/relationship",
   company: "v1/data/objects/query/Company"
@@ -119,7 +119,7 @@ async function makeGainsightAPICall(
 ) {
   const endpointPath = endpointTypeToPathMapping[endpointType];
   const URL: string = getURL(endpointPath);
-  const body = await createRequestBodyString(callName, lookupField, lookupValue);
+  const body = await createRequestBodyString(endpointType, lookupField, lookupValue);
 
   try {
     console.info('makeGainsightAPICall:: URL:: ' + URL);
