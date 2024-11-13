@@ -39,52 +39,63 @@ async function createRequestBody(
   lookupValue: any
 ) {
   let body;
-  if (bodyType === 'preinstall') {
-    //used to verify the the accessToken provided.
-    body = {
-      includeTotal: false,
-      limit: 1,
-      page: 0,
-      select: ['GSID'],
-    };
-  } else if (bodyType === 'relationship') {
-    //used to search for a relationship record.
-    body = {
-      select: ['Name', 'GSID', 'CompanyId'],
-      where: {
-        conditions: [
-          {
-            name: lookupField,
-            alias: 'A',
-            value: [lookupValue],
-            operator: 'EQ',
-          },
-        ],
-        expression: 'A',
-      },
-      limit: 100,
-      offset: 0,
-    };
-  } else if (bodyType === 'company') {
-    //used to search for a company record.
-    body = {
-      select: ['Name', 'SfdcAccountId', 'GSID'],
-      where: {
-        conditions: [
-          {
-            name: lookupField,
-            alias: 'A',
-            value: [lookupValue],
-            operator: 'EQ',
-          },
-        ],
-        expression: 'A',
-      },
-      limit: 100,
-      offset: 0,
-    };
-  } //end if
-  //add additional else if() statements here if you want to look up other tables or want to enahnce this to create records.
+
+  switch(bodyType) {
+    case "preinstall":
+      //used to verify the the accessToken provided.
+      body = {
+        includeTotal: false,
+        limit: 1,
+        page: 0,
+        select: ['GSID'],
+      };
+      break;
+      
+    case "relationship":
+      //used to search for a relationship record.
+      body = {
+        select: ['Name', 'GSID', 'CompanyId'],
+        where: {
+          conditions: [
+            {
+              name: lookupField,
+              alias: 'A',
+              value: [lookupValue],
+              operator: 'EQ',
+            },
+          ],
+          expression: 'A',
+        },
+        limit: 100,
+        offset: 0,
+      };
+      break;
+
+    case "company":
+      //used to search for a company record.
+      body = {
+        select: ['Name', 'SfdcAccountId', 'GSID'],
+        where: {
+          conditions: [
+            {
+              name: lookupField,
+              alias: 'A',
+              value: [lookupValue],
+              operator: 'EQ',
+            },
+          ],
+          expression: 'A',
+        },
+        limit: 100,
+        offset: 0,
+      };
+      break;
+
+    default:
+      console.error("Unknown request body type");
+      body = {};
+  } 
+  
   return body;
 } //end creatRequestBody
 
