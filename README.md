@@ -24,7 +24,7 @@ Both actions return details about the record(s) being search for and presents it
 
 To use this app you need to provide:
 
-- `domain`: The subdomain of the Gainsight instance you want to connect to. https://<domain>.gainsightcloud.com
+- `domain`: The subdomain of the Gainsight instance you want to connect to via `https://<domain>.gainsightcloud.com`
 - `accessKey`: API key from the Gainsight domain above.
 - `companyLookupField`: The Gainsight Company **Field Name** of the field you want to use to lookup the record.
 - `relationshipLookupField`: The Gainsight Relationship **Field Name** of the field you want to use to lookup the record.
