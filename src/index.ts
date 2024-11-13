@@ -33,14 +33,14 @@ Creates the body of the API request. Depending on which endpoint you call you wi
 contains. 
 See the Gainsight documentation for further details: https://support.gainsight.com/gainsight_nxt/API_and_Developer_Docs
 */
-async function createRequestBody(
-  bodyType: string,
+async function createRequestBodyString(
+  endpointType: string,
   lookupField: string,
   lookupValue: any
 ) {
   let body;
 
-  switch(bodyType) {
+  switch(endpointType) {
     case "preinstall":
       //used to verify the the accessToken provided.
       body = {
@@ -96,9 +96,14 @@ async function createRequestBody(
       body = {};
   } 
   
-  return body;
+  return JSON.stringify(body);
 } //end creatRequestBody
 
+const endpointTypeToPathMapping = {
+  preinstall: "v1/users/services/list",
+  relationship: "v1/data/objects/query/relationship",
+  company: "v1/data/objects/query/Company"
+};
 /*
 Function that actually makes the API call. This should be dynamic enough to work in most cases if not modify this for
 your use case.
@@ -108,24 +113,24 @@ you will need to modify the method.
 See Gainsight API to determine which method to use: https://support.gainsight.com/gainsight_nxt/API_and_Developer_Docs
  */
 async function makeGainsightAPICall(
-  precheck: string,
-  endpoint: string,
+  endpointType: string,
   lookupField: string,
   lookupValue: any
 ) {
-  let URL: string = getURL(endpoint);
-  let body = await createRequestBody(precheck, lookupField, lookupValue);
+  const endpointPath = endpointTypeToPathMapping[endpointType];
+  const URL: string = getURL(endpointPath);
+  const body = await createRequestBodyString(callName, lookupField, lookupValue);
 
   try {
     console.info('makeGainsightAPICall:: URL:: ' + URL);
-    console.info('makeGainsightAPICall:: body:: ' + JSON.stringify(body));
+    console.info('makeGainsightAPICall:: body:: ' + body);
     let GSResponse = await fetch(URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         AccessKey: GSACCESSKEY,
       },
-      body: JSON.stringify(body),
+      body: body,
     }); //end fetch
 
     let GSResponseJSON = await GSResponse.json();
@@ -188,7 +193,7 @@ export default {
     );
     GSACCESSKEY = settings.accessKey;
     BASEURL = `https://${settings.domain}.gainsightcloud.com`;
-    await makeGainsightAPICall('preinstall', 'v1/users/services/list', '', '');
+    await makeGainsightAPICall('preinstall', '', '');
 
     console.info(
       '------------------- END OF DEMO GAINSIGHT APP:: PREINSTALL -------------------'
@@ -346,7 +351,6 @@ export default {
       */
       result = await makeGainsightAPICall(
         'relationship',
-        'v1/data/objects/query/relationship',
         settings.relationshipLookupField,
         parameters.relSearchValue
       );
@@ -355,7 +359,6 @@ export default {
       //Another example of using setting an parmaters.
       result = await makeGainsightAPICall(
         'company',
-        'v1/data/objects/query/Company',
         settings.companyLookupField,
         parameters.compSearchValue
       );
