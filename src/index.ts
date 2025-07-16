@@ -376,6 +376,10 @@ export default {
     return `Tell the user their orderId is ${orderId} and thank them for their business.`;
     This option will require some tuning to get it to be consistent.
     */
+    // Handle undefined result (unknown actions)
+    if (!result) {
+      return undefined;
+    }
     return JSON.stringify(result.data.records);
   }, //end executeAction
 };
